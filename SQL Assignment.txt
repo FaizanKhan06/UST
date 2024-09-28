@@ -1,0 +1,71 @@
+1.	Find all employees whose first names start with a vowel and whose last names end with a consonant.
+
+SELECT * 
+FROM employees 
+WHERE LEFT(first_name, 1) IN ('a', 'e', 'i', 'o', 'u') 
+AND RIGHT(last_name, 1) NOT IN ('a', 'e', 'i', 'o', 'u');
+
+2.	For each department, display the total salary expenditure, the average salary, and the highest salary. Use window functions to calculate the total, average, and max salary, but show each result for all employees in that department.
+
+SELECT 
+    e.department_id, 
+    d.department_name, 
+    e.employee_id, 
+    e.first_name, 
+    e.last_name, 
+    e.salary, 
+    SUM(e.salary) OVER (PARTITION BY e.department_id) AS total_salary, 
+    AVG(e.salary) OVER (PARTITION BY e.department_id) AS avg_salary, 
+    MAX(e.salary) OVER (PARTITION BY e.department_id) AS max_salary 
+FROM employees e 
+JOIN departments d ON e.department_id = d.department_id;
+
+3.	Write a query that fetches the following.All employees, their department name, their manager’s name (if they have one), and their salary.
+
+SELECT 
+    e.employee_id, 
+    e.first_name AS employee_first_name, 
+    e.last_name AS employee_last_name, 
+    d.department_name, 
+    m.first_name AS manager_first_name, 
+    m.last_name AS manager_last_name, 
+    e.salary 
+FROM employees e 
+LEFT JOIN employees m ON e.manager_id = m.employee_id 
+JOIN departments d ON e.department_id = d.department_id;
+
+4.	Create a query using a recursive CTE to list all employees and their respective reporting chains (i.e., list the manager’s manager and so on).
+
+WITH RECURSIVE employee_hierarchy AS ( 
+    SELECT 
+        employee_id, 
+        first_name, 
+        last_name, 
+        manager_id, 
+        0 AS level 
+    FROM employees 
+    WHERE manager_id IS NULL 
+    UNION ALL 
+    SELECT 
+        e.employee_id, 
+        e.first_name, 
+        e.last_name, 
+        e.manager_id, 
+        eh.level + 1 
+    FROM employees e 
+    JOIN employee_hierarchy eh ON e.manager_id = eh.employee_id 
+) 
+SELECT * 
+FROM employee_hierarchy;
+
+5.	Write a query to fetch the details of employees earning above a certain salary threshold.
+
+SELECT 
+    employee_id, 
+    first_name, 
+    last_name, 
+    department_id, 
+    salary 
+FROM employees 
+WHERE salary > 40000;
+
