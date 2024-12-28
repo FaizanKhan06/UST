@@ -114,3 +114,69 @@ CREATE TABLE Transactions (
 );
 
 
+
+
+
+-- Users Table Insertion
+INSERT INTO Users (username, email, password_hash) 
+VALUES 
+('john_doe', 'john.doe@example.com', 'hashed_password_123'),
+('jane_smith', 'jane.smith@example.com', 'hashed_password_456'),
+('alex_johnson', 'alex.johnson@example.com', 'hashed_password_789');
+
+-- Accounts Table Insertion
+INSERT INTO Accounts (user_id, account_name, account_type, balance, currency) 
+VALUES 
+(1, 'John\'s Checking', 'checking', 1500.00, 'USD'),
+(1, 'John\'s Savings', 'savings', 5000.00, 'USD'),
+(2, 'Jane\'s Credit', 'credit', -200.00, 'USD'),
+(3, 'Alex\'s Checking', 'checking', 1000.00, 'USD');
+
+-- IncomeTransactionCategories Table Insertion
+INSERT INTO IncomeTransactionCategories (user_id, category_name, description) 
+VALUES 
+(1, 'Salary', 'Monthly salary from employer'),
+(2, 'Freelance', 'Freelance income from projects'),
+(3, 'Investment Return', 'Dividends from stocks');
+
+-- ExpenseTransactionCategories Table Insertion
+INSERT INTO ExpenseTransactionCategories (user_id, category_name, description) 
+VALUES 
+(1, 'Groceries', 'Monthly grocery expenses'),
+(1, 'Utilities', 'Electricity and water bills'),
+(2, 'Dining Out', 'Restaurants and takeouts'),
+(3, 'Transportation', 'Public transport and car expenses');
+
+-- Budgets Table Insertion
+INSERT INTO Budgets (user_id, category_id, budget_amount, start_date, end_date) 
+VALUES 
+(1, 1, 300.00, '2024-01-01', '2024-01-31'),  -- Budget for Groceries
+(1, 2, 150.00, '2024-01-01', '2024-01-31'),  -- Budget for Utilities
+(2, 3, 200.00, '2024-01-01', '2024-01-31'),  -- Budget for Dining Out
+(3, 4, 100.00, '2024-01-01', '2024-01-31');  -- Budget for Transportation
+
+-- RecurringTransactions Table Insertion
+INSERT INTO RecurringTransactions (user_id, account_id, category_id, transaction_type, amount, recurrence_frequency, next_due_date, description) 
+VALUES 
+(1, 1, 1, 'income', 3000.00, 'monthly', '2024-01-01', 'Monthly salary'),
+(2, 3, 3, 'income', 1500.00, 'weekly', '2024-01-04', 'Weekly freelance income'),
+(3, 2, 4, 'expense', 100.00, 'monthly', '2024-01-15', 'Monthly transportation cost');
+
+-- Transactions Table Insertion
+INSERT INTO Transactions (user_id, account_id, income_category_id, expense_category_id, transaction_type, amount, transaction_date, description) 
+VALUES 
+(1, 1, 1, NULL, 'income', 3000.00, '2024-01-01 09:00:00', 'Salary for January'),
+(2, 2, 2, NULL, 'income', 1500.00, '2024-01-03 10:00:00', 'Freelance work payment'),
+(1, 1, NULL, 1, 'expense', 50.00, '2024-01-02 15:30:00', 'Grocery shopping'),
+(1, 2, NULL, 2, 'expense', 120.00, '2024-01-04 11:00:00', 'Utility bill payment'),
+(2, 3, NULL, 3, 'expense', 30.00, '2024-01-04 13:00:00', 'Dining out at restaurant');
+
+-- Recurring Transaction for Monthly Income
+INSERT INTO Transactions (user_id, account_id, income_category_id, expense_category_id, transaction_type, amount, transaction_date, description) 
+VALUES 
+(1, 1, 1, NULL, 'income', 3000.00, '2024-02-01 09:00:00', 'Monthly salary');
+
+-- Recurring Transaction for Expense
+INSERT INTO Transactions (user_id, account_id, income_category_id, expense_category_id, transaction_type, amount, transaction_date, description) 
+VALUES 
+(1, 2, NULL, 2, 'expense', 120.00, '2024-02-05 11:00:00', 'February Utility bill payment');
