@@ -1,141 +1,168 @@
-1. Users Table
+Creating a money tracking application involves tracking financial transactions, balances, categories, users, and possibly more. Below is a high-level overview of the essential database tables, their attributes, and the schema structure for your application.
+
+### 1. **Users Table**
 This table stores information about the users of your application.
 
-Table: users
-Attribute	Type	Description
-user_id	INT	Primary Key, Auto-incremented
-username	VARCHAR(255)	Unique, user's display name
-email	VARCHAR(255)	Unique, used for login
-password_hash	VARCHAR(255)	Hashed password for security
-first_name	VARCHAR(255)	User's first name
-last_name	VARCHAR(255)	User's last name
-phone_number	VARCHAR(15)	Optional, user contact information
-created_at	TIMESTAMP	When the account was created
-updated_at	TIMESTAMP	When the account details were updated
-2. Accounts Table
+#### Table: `users`
+| Attribute      | Type        | Description                          |
+|----------------|-------------|--------------------------------------|
+| user_id        | INT         | Primary Key, Auto-incremented        |
+| username       | VARCHAR(255) | Unique, user's display name         |
+| email          | VARCHAR(255) | Unique, used for login              |
+| password_hash  | VARCHAR(255) | Hashed password for security        |
+| first_name     | VARCHAR(255) | User's first name                   |
+| last_name      | VARCHAR(255) | User's last name                    |
+| phone_number   | VARCHAR(15)  | Optional, user contact information  |
+| created_at     | TIMESTAMP   | When the account was created        |
+| updated_at     | TIMESTAMP   | When the account details were updated|
+
+### 2. **Accounts Table**
 This table stores different accounts associated with the user (e.g., savings, checking, cash).
 
-Table: accounts
-Attribute	Type	Description
-account_id	INT	Primary Key, Auto-incremented
-user_id	INT	Foreign Key to users.user_id
-account_name	VARCHAR(255)	Name of the account (e.g., Checking, Cash)
-balance	DECIMAL(10, 2)	Current balance of the account
-account_type	ENUM('cash', 'bank', 'investment', 'credit')	Type of account
-created_at	TIMESTAMP	When the account was created
-updated_at	TIMESTAMP	When the account details were updated
-3. Categories Table
+#### Table: `accounts`
+| Attribute      | Type        | Description                          |
+|----------------|-------------|--------------------------------------|
+| account_id     | INT         | Primary Key, Auto-incremented        |
+| user_id        | INT         | Foreign Key to `users.user_id`       |
+| account_name   | VARCHAR(255) | Name of the account (e.g., Checking, Cash) |
+| balance        | DECIMAL(10, 2) | Current balance of the account     |
+| account_type   | ENUM('cash', 'bank', 'investment', 'credit') | Type of account |
+| created_at     | TIMESTAMP   | When the account was created        |
+| updated_at     | TIMESTAMP   | When the account details were updated|
+
+### 3. **Categories Table**
 This table stores categories for transactions (e.g., Food, Rent, Income, Entertainment).
 
-Table: categories
-Attribute	Type	Description
-category_id	INT	Primary Key, Auto-incremented
-user_id	INT	Foreign Key to users.user_id
-name	VARCHAR(255)	Category name (e.g., Food, Rent)
-description	TEXT	Optional, description of the category
-created_at	TIMESTAMP	When the category was created
-updated_at	TIMESTAMP	When the category was last updated
-4. Transactions Table
+#### Table: `categories`
+| Attribute      | Type        | Description                          |
+|----------------|-------------|--------------------------------------|
+| category_id    | INT         | Primary Key, Auto-incremented        |
+| user_id        | INT         | Foreign Key to `users.user_id`       |
+| name           | VARCHAR(255) | Category name (e.g., Food, Rent)     |
+| description    | TEXT        | Optional, description of the category|
+| created_at     | TIMESTAMP   | When the category was created        |
+| updated_at     | TIMESTAMP   | When the category was last updated   |
+
+### 4. **Transactions Table**
 This table stores the transactions made by the user, including details like amount, category, date, etc.
 
-Table: transactions
-Attribute	Type	Description
-transaction_id	INT	Primary Key, Auto-incremented
-user_id	INT	Foreign Key to users.user_id
-account_id	INT	Foreign Key to accounts.account_id
-category_id	INT	Foreign Key to categories.category_id
-amount	DECIMAL(10, 2)	The amount of the transaction
-transaction_type	ENUM('income', 'expense')	Type of transaction (income or expense)
-date	DATE	Date of the transaction
-description	TEXT	Optional, description of the transaction
-created_at	TIMESTAMP	When the transaction was created
-updated_at	TIMESTAMP	When the transaction details were updated
-5. Budgets Table
+#### Table: `transactions`
+| Attribute      | Type        | Description                          |
+|----------------|-------------|--------------------------------------|
+| transaction_id | INT         | Primary Key, Auto-incremented        |
+| user_id        | INT         | Foreign Key to `users.user_id`       |
+| account_id     | INT         | Foreign Key to `accounts.account_id` |
+| category_id    | INT         | Foreign Key to `categories.category_id` |
+| amount         | DECIMAL(10, 2) | The amount of the transaction      |
+| transaction_type | ENUM('income', 'expense') | Type of transaction (income or expense) |
+| date           | DATE        | Date of the transaction              |
+| description    | TEXT        | Optional, description of the transaction|
+| created_at     | TIMESTAMP   | When the transaction was created     |
+| updated_at     | TIMESTAMP   | When the transaction details were updated|
+
+### 5. **Budgets Table**
 If the user has set a budget, this table tracks the budgeted amount and compares it with actual expenses.
 
-Table: budgets
-Attribute	Type	Description
-budget_id	INT	Primary Key, Auto-incremented
-user_id	INT	Foreign Key to users.user_id
-category_id	INT	Foreign Key to categories.category_id
-budget_amount	DECIMAL(10, 2)	Budgeted amount for the category
-start_date	DATE	Start date of the budget period
-end_date	DATE	End date of the budget period
-created_at	TIMESTAMP	When the budget was created
-updated_at	TIMESTAMP	When the budget was last updated
-6. Recurring Transactions Table
+#### Table: `budgets`
+| Attribute      | Type        | Description                          |
+|----------------|-------------|--------------------------------------|
+| budget_id      | INT         | Primary Key, Auto-incremented        |
+| user_id        | INT         | Foreign Key to `users.user_id`       |
+| category_id    | INT         | Foreign Key to `categories.category_id` |
+| budget_amount  | DECIMAL(10, 2) | Budgeted amount for the category    |
+| start_date     | DATE        | Start date of the budget period      |
+| end_date       | DATE        | End date of the budget period        |
+| created_at     | TIMESTAMP   | When the budget was created          |
+| updated_at     | TIMESTAMP   | When the budget was last updated     |
+
+### 6. **Recurring Transactions Table**
 If users set up recurring payments or incomes, this table will track those schedules.
 
-Table: recurring_transactions
-Attribute	Type	Description
-recurring_id	INT	Primary Key, Auto-incremented
-user_id	INT	Foreign Key to users.user_id
-account_id	INT	Foreign Key to accounts.account_id
-category_id	INT	Foreign Key to categories.category_id
-amount	DECIMAL(10, 2)	The recurring transaction amount
-frequency	ENUM('daily', 'weekly', 'monthly', 'annually')	Frequency of the transaction
-next_transaction_date	DATE	Date for the next scheduled transaction
-description	TEXT	Optional, description of the recurring transaction
-created_at	TIMESTAMP	When the recurring transaction was created
-updated_at	TIMESTAMP	When the recurring transaction was last updated
-7. Transaction Attachments Table
+#### Table: `recurring_transactions`
+| Attribute          | Type        | Description                               |
+|--------------------|-------------|-------------------------------------------|
+| recurring_id       | INT         | Primary Key, Auto-incremented             |
+| user_id            | INT         | Foreign Key to `users.user_id`            |
+| account_id         | INT         | Foreign Key to `accounts.account_id`      |
+| category_id        | INT         | Foreign Key to `categories.category_id`   |
+| amount             | DECIMAL(10, 2) | The recurring transaction amount       |
+| frequency          | ENUM('daily', 'weekly', 'monthly', 'annually') | Frequency of the transaction |
+| next_transaction_date | DATE     | Date for the next scheduled transaction  |
+| description        | TEXT        | Optional, description of the recurring transaction|
+| created_at         | TIMESTAMP   | When the recurring transaction was created|
+| updated_at         | TIMESTAMP   | When the recurring transaction was last updated|
+
+### 7. **Transaction Attachments Table**
 For storing any media or documents attached to transactions, such as receipts.
 
-Table: transaction_attachments
-Attribute	Type	Description
-attachment_id	INT	Primary Key, Auto-incremented
-transaction_id	INT	Foreign Key to transactions.transaction_id
-file_path	VARCHAR(255)	Path to the attached file
-file_type	VARCHAR(50)	Type of the file (e.g., pdf, jpg)
-uploaded_at	TIMESTAMP	When the attachment was uploaded
-8. Currency Table
+#### Table: `transaction_attachments`
+| Attribute         | Type        | Description                               |
+|-------------------|-------------|-------------------------------------------|
+| attachment_id     | INT         | Primary Key, Auto-incremented             |
+| transaction_id    | INT         | Foreign Key to `transactions.transaction_id` |
+| file_path         | VARCHAR(255) | Path to the attached file               |
+| file_type         | VARCHAR(50)  | Type of the file (e.g., pdf, jpg)        |
+| uploaded_at       | TIMESTAMP   | When the attachment was uploaded         |
+
+### 8. **Currency Table**
 If the application supports multiple currencies, this table stores information about supported currencies.
 
-Table: currencies
-Attribute	Type	Description
-currency_id	INT	Primary Key, Auto-incremented
-code	VARCHAR(10)	Currency code (e.g., USD, EUR)
-symbol	VARCHAR(10)	Currency symbol (e.g., $, €)
-name	VARCHAR(100)	Full currency name (e.g., US Dollar)
-created_at	TIMESTAMP	When the currency was added
-9. Transaction Exchange Rates Table (optional)
+#### Table: `currencies`
+| Attribute      | Type        | Description                          |
+|----------------|-------------|--------------------------------------|
+| currency_id    | INT         | Primary Key, Auto-incremented        |
+| code           | VARCHAR(10) | Currency code (e.g., USD, EUR)      |
+| symbol         | VARCHAR(10) | Currency symbol (e.g., $, €)        |
+| name           | VARCHAR(100) | Full currency name (e.g., US Dollar)|
+| created_at     | TIMESTAMP   | When the currency was added         |
+
+### 9. **Transaction Exchange Rates Table (optional)**
 If supporting multiple currencies, this table tracks exchange rates between currencies at a given point in time.
 
-Table: transaction_exchange_rates
-Attribute	Type	Description
-rate_id	INT	Primary Key, Auto-incremented
-from_currency_id	INT	Foreign Key to currencies.currency_id
-to_currency_id	INT	Foreign Key to currencies.currency_id
-exchange_rate	DECIMAL(10, 6)	Exchange rate from one currency to another
-date	DATE	Date of the exchange rate
-10. Transaction History Table (optional for audit logs)
+#### Table: `transaction_exchange_rates`
+| Attribute      | Type        | Description                          |
+|----------------|-------------|--------------------------------------|
+| rate_id        | INT         | Primary Key, Auto-incremented        |
+| from_currency_id | INT       | Foreign Key to `currencies.currency_id` |
+| to_currency_id   | INT       | Foreign Key to `currencies.currency_id` |
+| exchange_rate   | DECIMAL(10, 6) | Exchange rate from one currency to another |
+| date            | DATE        | Date of the exchange rate           |
+
+### 10. **Transaction History Table (optional for audit logs)**
 If you need to keep track of transaction history for audit purposes, such as user account changes or transaction modifications.
 
-Table: transaction_history
-Attribute	Type	Description
-history_id	INT	Primary Key, Auto-incremented
-transaction_id	INT	Foreign Key to transactions.transaction_id
-action	ENUM('created', 'updated', 'deleted')	Action performed on the transaction
-changed_by_user_id	INT	User ID of the person who made the change
-change_date	TIMESTAMP	When the change occurred
-Database Relationships
-One-to-Many:
+#### Table: `transaction_history`
+| Attribute          | Type        | Description                               |
+|--------------------|-------------|-------------------------------------------|
+| history_id         | INT         | Primary Key, Auto-incremented             |
+| transaction_id     | INT         | Foreign Key to `transactions.transaction_id` |
+| action             | ENUM('created', 'updated', 'deleted') | Action performed on the transaction|
+| changed_by_user_id | INT         | User ID of the person who made the change |
+| change_date        | TIMESTAMP   | When the change occurred                  |
 
-A user can have multiple accounts (users -> accounts).
-A user can have multiple transactions (users -> transactions).
-A user can have multiple categories (users -> categories).
-Many-to-One:
+---
 
-A transaction belongs to one account and one category (transactions -> accounts, transactions -> categories).
-Many-to-Many (with additional table):
+### Database Relationships
 
-If a transaction can involve multiple users or accounts, you may need a bridge table.
-One-to-One:
+- **One-to-Many**: 
+  - A user can have multiple accounts (`users` -> `accounts`).
+  - A user can have multiple transactions (`users` -> `transactions`).
+  - A user can have multiple categories (`users` -> `categories`).
+  
+- **Many-to-One**:
+  - A transaction belongs to one account and one category (`transactions` -> `accounts`, `transactions` -> `categories`).
 
-Each recurring transaction can only belong to one user and one account.
-Example SQL Schema:
-sql
-Copy code
+- **Many-to-Many (with additional table)**:
+  - If a transaction can involve multiple users or accounts, you may need a bridge table.
+
+- **One-to-One**:
+  - Each recurring transaction can only belong to one user and one account.
+
+---
+
+### Example SQL Schema:
+
+```sql
 CREATE TABLE users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) UNIQUE NOT NULL,
@@ -158,11 +185,6 @@ CREATE TABLE accounts (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
+```
+
 This setup provides a foundation for a money tracking application. You can expand or modify this structure based on specific features like goal tracking, more detailed reporting, or advanced user preferences.
-
-
-
-
-
-
-
